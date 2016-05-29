@@ -29,10 +29,11 @@ public class WordCount {
             System.err.println("Usage: wordcount <in> <out>这玩意儿是这么用的");
             System.exit(2);
         }
-        Path inputPath = new Path(remainingArgs[0]);
-        Path outputPath = new Path(remainingArgs[1]);
+        //先消除already exist的问题
+        Path outputPath = new Path(remainingArgs[remainingArgs.length - 1]);
         FileSystem fileSystem = FileSystem.get(configuration);
         fileSystem.delete(outputPath, true);
+
         Job job = new Job(configuration, "FunComing word count");
         job.setJarByClass(WordCount.class);
         job.setMapperClass(TokenizerMapper.class);
@@ -46,9 +47,10 @@ public class WordCount {
 
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(IntWritable.class);
-        FileInputFormat.addInputPath(job, inputPath);
+        for (int i = 0; i < remainingArgs.length - 1; i++) {
+            FileInputFormat.addInputPath(job, new Path(remainingArgs[i]));
+        }
         FileOutputFormat.setOutputPath(job, outputPath);
-        fileSystem.delete(outputPath, true);
         MultipleOutputs.addNamedOutput(job, "name111", TextOutputFormat.class, Text.class, IntWritable.class);
         MultipleOutputs.addNamedOutput(job, "name222", TextOutputFormat.class, Text.class, IntWritable.class);
 
