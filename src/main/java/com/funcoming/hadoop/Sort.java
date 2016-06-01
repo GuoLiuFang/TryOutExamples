@@ -2,18 +2,19 @@ package com.funcoming.hadoop;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.BytesWritable;
-import org.apache.hadoop.io.Writable;
-import org.apache.hadoop.io.WritableComparable;
+import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapred.ClusterStatus;
 import org.apache.hadoop.mapred.JobClient;
 import org.apache.hadoop.mapreduce.*;
 import org.apache.hadoop.mapreduce.filecache.DistributedCache;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
+import org.apache.hadoop.mapreduce.lib.input.*;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.*;
 import org.apache.hadoop.mapreduce.lib.partition.InputSampler;
 import org.apache.hadoop.mapreduce.lib.partition.TotalOrderPartitioner;
 import org.apache.hadoop.util.Tool;
@@ -58,10 +59,14 @@ public class Sort<K, V> extends Configured implements Tool {
         if (sort_reduces != null) {
             num_reduces = clusterStatus.getTaskTrackers() * Integer.parseInt(sort_reduces);
         }
-        Class<? extends InputFormat> inputFormatClass = SequenceFileInputFormat.class;
-        Class<? extends OutputFormat> outputFormatClass = SequenceFileOutputFormat.class;
-        Class<? extends WritableComparable> outputKeyClass = BytesWritable.class;
-        Class<? extends Writable> outputValueClass = BytesWritable.class;
+//        Class<? extends InputFormat> inputFormatClass = SequenceFileInputFormat.class;
+        Class<? extends InputFormat> inputFormatClass = TextInputFormat.class;
+        Class<? extends OutputFormat> outputFormatClass = TextOutputFormat.class;
+//        Class<? extends OutputFormat> outputFormatClass = SequenceFileOutputFormat.class;
+        Class<? extends WritableComparable> outputKeyClass = LongWritable.class;
+//        Class<? extends WritableComparable> outputKeyClass = BytesWritable.class;
+        Class<? extends Writable> outputValueClass = Text.class;
+//        Class<? extends Writable> outputValueClass = BytesWritable.class;
         List<String> otherArgs = new ArrayList<String>();
         InputSampler.Sampler<K, V> inputSampler = null;
         for (int i = 0; i < args.length; i++) {
@@ -116,6 +121,8 @@ public class Sort<K, V> extends Configured implements Tool {
 
         FileInputFormat.setInputPaths(job, otherArgs.get(0));
         FileOutputFormat.setOutputPath(job, new Path(otherArgs.get(1)));
+        FileSystem fileSystem = FileSystem.get(configuration);
+        fileSystem.delete(new Path(otherArgs.get(1)), true);
 
         if (inputSampler != null) {
             System.out.println("Sampling input to effect total-order sort...");
@@ -124,7 +131,7 @@ public class Sort<K, V> extends Configured implements Tool {
             Path partitionFile = new Path(inputDir, "_sortPartitioning_glf");
             TotalOrderPartitioner.setPartitionFile(configuration, partitionFile);
             InputSampler.writePartitionFile(job, inputSampler);
-            URI partitionUri = new URI(partitionFile.toString() + "#" + "_sortPartitioning");
+            URI partitionUri = new URI(partitionFile.toString() + "#" + "_sortPartitioning_glf");
             DistributedCache.addCacheFile(partitionUri, configuration);
         }
         System.out.println("Running on " + clusterStatus.getTaskTrackers() + " nodes to sort from " + FileInputFormat.getInputPaths(job)[0] + " into " + FileOutputFormat.getOutputPath(job) + " with " + num_reduces + " reduces. ");
