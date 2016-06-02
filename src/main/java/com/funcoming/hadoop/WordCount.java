@@ -15,6 +15,7 @@ import org.apache.hadoop.mapreduce.lib.output.LazyOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.GenericOptionsParser;
+import org.apache.hadoop.util.ToolRunner;
 
 import java.io.IOException;
 
@@ -25,8 +26,9 @@ public class WordCount {
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
         Configuration configuration = new Configuration();
         String[] remainingArgs = new GenericOptionsParser(configuration, args).getRemainingArgs();
-        if (remainingArgs.length != 2) {
+        if (remainingArgs.length < 2) {
             System.err.println("Usage: wordcount <in> <out>这玩意儿是这么用的");
+            ToolRunner.printGenericCommandUsage(System.out);
             System.exit(2);
         }
         //先消除already exist的问题
@@ -51,6 +53,8 @@ public class WordCount {
             FileInputFormat.addInputPath(job, new Path(remainingArgs[i]));
         }
         FileOutputFormat.setOutputPath(job, outputPath);
+
+
         MultipleOutputs.addNamedOutput(job, "name111", TextOutputFormat.class, Text.class, IntWritable.class);
         MultipleOutputs.addNamedOutput(job, "name222", TextOutputFormat.class, Text.class, IntWritable.class);
 
