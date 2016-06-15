@@ -6,7 +6,7 @@ import com.funcoming.reducer.MultipleOutputsReducer;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
@@ -48,15 +48,16 @@ public class WordCount {
 
 
         job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(IntWritable.class);
+        job.setOutputValueClass(LongWritable.class);
         for (int i = 0; i < remainingArgs.length - 1; i++) {
             FileInputFormat.addInputPath(job, new Path(remainingArgs[i]));
         }
         FileOutputFormat.setOutputPath(job, outputPath);
 
 
-        MultipleOutputs.addNamedOutput(job, "name111", TextOutputFormat.class, Text.class, IntWritable.class);
-        MultipleOutputs.addNamedOutput(job, "name222", TextOutputFormat.class, Text.class, IntWritable.class);
+        MultipleOutputs.addNamedOutput(job, "name111", TextOutputFormat.class, Text.class, LongWritable.class);
+        MultipleOutputs.addNamedOutput(job, "name222", TextOutputFormat.class, Text.class, LongWritable.class);
+        job.setNumReduceTasks(0);//0-1目前是OK的。
 
         System.exit(job.waitForCompletion(true) ? 0 : 1);
     }

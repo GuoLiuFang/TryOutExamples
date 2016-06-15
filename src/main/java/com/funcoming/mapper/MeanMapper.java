@@ -8,18 +8,25 @@ import java.io.IOException;
 import java.util.StringTokenizer;
 
 /**
- * Created by LiuFangGuo on 5/28/16.
+ * Created by LiuFangGuo on 6/15/16.
  */
-public class TokenizerMapper extends Mapper<LongWritable, Text, Text, LongWritable> {
+public class MeanMapper extends Mapper<LongWritable, Text, Text, LongWritable> {
+    private final static Text COUNT = new Text("count");
+    private final static Text LENGTH = new Text("length");
     private final static LongWritable one = new LongWritable(1);
-    private Text word = new Text();
+
+    private LongWritable wordLen = new LongWritable();
+    private String word;
 
     @Override
     protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
         StringTokenizer stringTokenizer = new StringTokenizer(value.toString());
         while (stringTokenizer.hasMoreTokens()) {
-            this.word.set(stringTokenizer.nextToken());
-            context.write(this.word, this.one);
+            this.word = stringTokenizer.nextToken();
+            this.wordLen.set(this.word.length());
+            context.write(this.COUNT, this.one);
+            context.write(this.LENGTH, this.wordLen);
         }
+
     }
 }
