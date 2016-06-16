@@ -1,7 +1,6 @@
 package com.funcoming.hadoop;
 
 import com.funcoming.mapper.TokenizerMapper;
-import com.funcoming.reducer.IntSumReducer;
 import com.funcoming.reducer.MultipleOutputsReducer;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
@@ -11,7 +10,6 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-import org.apache.hadoop.mapreduce.lib.output.LazyOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.GenericOptionsParser;
@@ -39,8 +37,8 @@ public class WordCount {
         Job job = new Job(configuration, "FunComing word count");
         job.setJarByClass(WordCount.class);
         job.setMapperClass(TokenizerMapper.class);
-//        job.setCombinerClass(IntSumReducer.class);
-//        job.setReducerClass(IntSumReducer.class);
+//        job.setCombinerClass(LongSumReducer.class);
+//        job.setReducerClass(LongSumReducer.class);
         job.setCombinerClass(MultipleOutputsReducer.class);
         job.setReducerClass(MultipleOutputsReducer.class);
 

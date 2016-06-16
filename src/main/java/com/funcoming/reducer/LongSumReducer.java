@@ -9,7 +9,7 @@ import java.io.IOException;
 /**
  * Created by LiuFangGuo on 5/28/16.
  */
-public class IntSumReducer extends Reducer<Text, LongWritable, Text, LongWritable> {
+public class LongSumReducer extends Reducer<Text, LongWritable, Text, LongWritable> {
     private LongWritable result = new LongWritable();
 
     @Override

@@ -11,8 +11,8 @@ import java.util.StringTokenizer;
  * Created by LiuFangGuo on 6/15/16.
  */
 public class MeanMapper extends Mapper<LongWritable, Text, Text, LongWritable> {
-    private final static Text COUNT = new Text("count");
-    private final static Text LENGTH = new Text("length");
+    public final static Text COUNT = new Text("count");
+    public final static Text LENGTH = new Text("length");
     private final static LongWritable one = new LongWritable(1);
 
     private LongWritable wordLen = new LongWritable();
