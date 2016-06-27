@@ -53,7 +53,8 @@ public class WordMean extends Configured implements Tool {
             }
         }
         double wordMean = ((double) length) / ((double) count);
-        this.LOG.error("最终算出所有字符长度的平均值为" + wordMean);
+        System.out.println("System.out.println--最终算出所有字符长度的平均值为" + wordMean);
+        this.LOG.info("LOG.error--最终算出所有字符长度的平均值为" + wordMean);
         bufferedReader.close();
     }
 

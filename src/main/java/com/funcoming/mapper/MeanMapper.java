@@ -16,17 +16,19 @@ public class MeanMapper extends Mapper<LongWritable, Text, Text, LongWritable> {
     private final static LongWritable one = new LongWritable(1);
 
     private LongWritable wordLen = new LongWritable();
-    private String word;
+//    private String word;
 
     @Override
     protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
-        StringTokenizer stringTokenizer = new StringTokenizer(value.toString());
-        while (stringTokenizer.hasMoreTokens()) {
-            this.word = stringTokenizer.nextToken();
-            this.wordLen.set(this.word.length());
-            context.write(this.COUNT, this.one);
-            context.write(this.LENGTH, this.wordLen);
-        }
-
+//        StringTokenizer stringTokenizer = new StringTokenizer(value.toString());
+//        while (stringTokenizer.hasMoreTokens()) {
+//            this.word = stringTokenizer.nextToken();
+//            this.wordLen.set(this.word.length());
+//            context.write(this.COUNT, this.one);
+//            context.write(this.LENGTH, this.wordLen);
+//        }
+        this.wordLen.set(value.toString().length());
+        context.write(this.COUNT, this.one);
+        context.write(this.LENGTH, this.wordLen);
     }
 }
