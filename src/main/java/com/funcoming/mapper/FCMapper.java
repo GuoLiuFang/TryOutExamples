@@ -15,8 +15,10 @@ public class FCMapper extends Mapper<LongWritable, Text, LongWritable, NullWrita
 
     @Override
     protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
-        String strNum = value.toString();
-        this.sortKey.set(Long.parseLong(strNum));
+//        String strNum = value.toString();
+//        this.sortKey.set(Long.parseLong(strNum));
+//        context.write(this.sortKey, NullWritable.get());
+        this.sortKey.set(value.toString().length());
         context.write(this.sortKey, NullWritable.get());
     }
 }
