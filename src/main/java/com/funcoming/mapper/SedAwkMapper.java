@@ -1,5 +1,7 @@
 package com.funcoming.mapper;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
@@ -15,6 +17,7 @@ import java.util.regex.Pattern;
  * Created by LiuFangGuo on 6/28/16.
  */
 public class SedAwkMapper extends Mapper<LongWritable, Text, Text, NullWritable> {
+    private static final Log LOG = LogFactory.getLog(SedAwkMapper.class);
     private final String patternString = "2015-0[1-5]";
     private final Pattern patterner = Pattern.compile(this.patternString);
     private Text line = new Text();
@@ -34,6 +37,7 @@ public class SedAwkMapper extends Mapper<LongWritable, Text, Text, NullWritable>
  * 把CacheFile的内容逐行写入到context中。。
  *
  */
+        this.LOG.info("开始打开Cachefile");
         BufferedReader bufferedReader = new BufferedReader(new FileReader("guoliufang.txt"));
         String line = null;
         while ((line = bufferedReader.readLine()) != null) {
@@ -41,6 +45,6 @@ public class SedAwkMapper extends Mapper<LongWritable, Text, Text, NullWritable>
             context.write(this.line, NullWritable.get());
         }
         bufferedReader.close();
-
+        this.LOG.info("结束使用Cachefile");
     }
 }
